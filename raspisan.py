@@ -49,16 +49,22 @@ def get_next_duty():
 async def send_daily_message():
     while True:
         now = datetime.now()
-        target_time = now.replace(hour=23, minute=44, second=0, microsecond=0)  # 8:00 утра
+        target_time = now.replace(hour=8, minute=0, second=0, microsecond=0)  # 8:00 утра
+        
+        # Если текущее время уже позже 8:00, устанавливаем цель на следующий день
         if now > target_time:
             target_time += timedelta(days=1)
-
+        
+        # Пропуск выходных (суббота и воскресенье)
+        while target_time.weekday() >= 5:  # 5 - суббота, 6 - воскресенье
+            target_time += timedelta(days=1)
+        
         sleep_time = (target_time - now).total_seconds()
         await asyncio.sleep(sleep_time)
-
+        
         duty_today = get_next_duty()
-        message = f"👨‍🏫 Дежурные на сегодня:\n- {duty_today[0]}\n- {duty_today[1]}"
-        await bot.send_message(CHAT_ID, message, disable_notification=False)  # Сообщение в группу
+        message = f"\U0001F468‍🏫 Дежурные на сегодня:\n- {duty_today[0]}\n- {duty_today[1]}"
+        await bot.send_message(CHAT_ID, message, disable_notification=False)  # Отправка сообщения в группу
 
 # Запускаем бота
 async def main():
