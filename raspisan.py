@@ -49,7 +49,7 @@ def get_next_duty():
 async def send_daily_message():
     while True:
         now = datetime.now()
-        target_time = now.replace(hour=23, minute=53, second=0, microsecond=0)  # 8:00 утра
+        target_time = now.replace(hour=23, minute=57, second=0, microsecond=0)  # 8:00 утра
         
         # Если текущее время уже позже 8:00, устанавливаем цель на следующий день
         if now > target_time:
